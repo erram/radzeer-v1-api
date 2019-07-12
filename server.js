@@ -48,7 +48,7 @@ function getUsers(req,res) {
 
         console.log('connected as id ' + connection.threadId);
 
-        var limit = "";
+        var limit = " limit 25";
         var total = 0;
         
         if (req.query.limit) {
@@ -91,7 +91,7 @@ function getCompany(req,res) {
 
         console.log('connected as id ' + connection.threadId);
 
-        var limit = "";
+        var limit = " limit 25";
         var total = 0;
         
         if (req.query.limit) {
@@ -135,7 +135,7 @@ function getProduct(req,res) {
 
         console.log('connected as id ' + connection.threadId);
 
-        var limit = "";
+        var limit = " limit 25";
         var total = 0;
         
         if (req.query.limit) {
@@ -179,7 +179,7 @@ function getLine(req,res) {
 
         console.log('connected as id ' + connection.threadId);
 
-        var limit = "";
+        var limit = " limit 25";
         var total = 0;
         
         if (req.query.limit) {
@@ -223,7 +223,7 @@ function getDemand(req,res) {
 
         console.log('connected as id ' + connection.threadId);
 
-        var limit = "";
+        var limit = " limit 25";
         var total = 0;
         
         if (req.query.limit) {
