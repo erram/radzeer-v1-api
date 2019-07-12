@@ -49,6 +49,7 @@ function getUsers(req,res) {
         console.log('connected as id ' + connection.threadId);
 
         var limit = "";
+        var total = 0;
         
         if (req.query.limit) {
             limit = " limit " + req.query.limit;
@@ -57,11 +58,19 @@ function getUsers(req,res) {
         if (req.query.skip) {
             limit = " limit " + req.query.limit + ", " + req.query.skip;
         }
+
+        connection.query("SELECT count(*) as total FROM user", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
         connection.query("select * from user order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
-                var count = Object.keys(rows).length;
-                res.json({ items: rows, total: count });
+                res.json({ items: rows, total: total });
             }           
         });
 
@@ -83,6 +92,7 @@ function getCompany(req,res) {
         console.log('connected as id ' + connection.threadId);
 
         var limit = "";
+        var total = 0;
         
         if (req.query.limit) {
             limit = " limit " + req.query.limit;
@@ -91,6 +101,15 @@ function getCompany(req,res) {
         if (req.query.skip) {
             limit = " limit " + req.query.limit + ", " + req.query.skip;
         }
+
+        connection.query("SELECT count(*) as total FROM company", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
         connection.query("select * from company order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
@@ -117,6 +136,7 @@ function getProduct(req,res) {
         console.log('connected as id ' + connection.threadId);
 
         var limit = "";
+        var total = 0;
         
         if (req.query.limit) {
             limit = " limit " + req.query.limit;
@@ -125,6 +145,15 @@ function getProduct(req,res) {
         if (req.query.skip) {
             limit = " limit " + req.query.limit + ", " + req.query.skip;
         }
+
+        connection.query("SELECT count(*) as total FROM auction", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
         connection.query("select * from auction order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
@@ -151,6 +180,7 @@ function getLine(req,res) {
         console.log('connected as id ' + connection.threadId);
 
         var limit = "";
+        var total = 0;
         
         if (req.query.limit) {
             limit = " limit " + req.query.limit;
@@ -159,6 +189,15 @@ function getLine(req,res) {
         if (req.query.skip) {
             limit = " limit " + req.query.limit + ", " + req.query.skip;
         }
+
+        connection.query("SELECT count(*) as total FROM line", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
         connection.query("select * from line order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
@@ -185,6 +224,7 @@ function getDemand(req,res) {
         console.log('connected as id ' + connection.threadId);
 
         var limit = "";
+        var total = 0;
         
         if (req.query.limit) {
             limit = " limit " + req.query.limit;
@@ -193,6 +233,15 @@ function getDemand(req,res) {
         if (req.query.skip) {
             limit = " limit " + req.query.limit + ", " + req.query.skip;
         }
+
+        connection.query("SELECT count(*) as total FROM demand", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
         connection.query("select * from demand order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
