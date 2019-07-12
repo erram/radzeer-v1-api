@@ -113,8 +113,7 @@ function getCompany(req,res) {
         connection.query("select * from company order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
-                var count = Object.keys(rows).length;
-                res.json({ items: rows, total: count });
+                res.json({ items: rows, total: total });
             }           
         });
 
@@ -157,8 +156,7 @@ function getProduct(req,res) {
         connection.query("select * from auction order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
-                var count = Object.keys(rows).length;
-                res.json({ items: rows, total: count });
+                res.json({ items: rows, total: total });
             }           
         });
 
@@ -201,8 +199,7 @@ function getLine(req,res) {
         connection.query("select * from line order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
-                var count = Object.keys(rows).length;
-                res.json({ items: rows, total: count });
+                res.json({ items: rows, total: total });
             }           
         });
 
@@ -245,8 +242,7 @@ function getDemand(req,res) {
         connection.query("select * from demand order by id asc" + limit, (err,rows) => {
             connection.release();
             if(!err) {
-                var count = Object.keys(rows).length;
-                res.json({ items: rows, total: count });
+                res.json({ items: rows, total: total });
             }           
         });
 
