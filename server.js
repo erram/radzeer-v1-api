@@ -38,284 +38,47 @@ const pool = sql.createPool({
     debug: false
 });
 
-function getUsers(req,res) {
+const createHandler = tableName => (req, res) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        res.json({ code: 500, status: 'connection error' });
+        return;
+      }
 
-    pool.getConnection((err,connection) => {
+      connection.query(`select count(*) as total from ${tableName}`, (err, result) => {
         if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
+          res.json({ code: 500, status: 'error in count total query' });
+          return;
+        }
+
+        const total = Number(result[0].total);
+        const { limit = 25, skip = 0 } = req.query;
+
+        connection.query(`select * from ${tableName} order by id asc limit ${skip}, ${limit}`, (err, items) => {
+          if (err) {
+            res.json({ code: 500, status: 'error in fetch data query' });
             return;
-        }   
+          }
 
-        console.log('connected as id ' + connection.threadId);
-
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
-
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM user", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
+          res.json({ items, total });
         });
+      });
 
-        connection.query("select * from user order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
+      connection.on('error', err => {
+        res.json({ code: 500, status: 'unexpected error' });
+        return;
+      });
+    });
+};
 
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
+app.get('/api/user', createHandler('user'))
 
-function getCompany(req,res) {
+app.get('/api/company', createHandler('company'))
 
-    pool.getConnection((err,connection) => {
-        if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
-        }   
+app.get('/api/product', createHandler('product'))
 
-        console.log('connected as id ' + connection.threadId);
+app.get('/api/line', createHandler('line'))
 
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
+app.get('/api/demand', createHandler('demand'))
 
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM company", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
-        });
-
-        connection.query("select * from company order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
-
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
-
-function getProduct(req,res) {
-
-    pool.getConnection((err,connection) => {
-        if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
-        }   
-
-        console.log('connected as id ' + connection.threadId);
-
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
-
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM auction", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
-        });
-
-        connection.query("select * from auction order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
-
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
-
-function getLine(req,res) {
-
-    pool.getConnection((err,connection) => {
-        if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
-        }   
-
-        console.log('connected as id ' + connection.threadId);
-
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
-
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM line", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
-        });
-
-        connection.query("select * from line order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
-
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
-
-function getDemand(req,res) {
-
-    pool.getConnection((err,connection) => {
-        if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
-        }   
-
-        console.log('connected as id ' + connection.threadId);
-
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
-
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM demand", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
-        });
-
-        connection.query("select * from demand order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
-
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
-
-function getMessages(req,res) {
-
-    pool.getConnection((err,connection) => {
-        if (err) {
-            res.json({"code" : 100, "status" : "Error in connection database"});
-            return;
-        }   
-
-        console.log('connected as id ' + connection.threadId);
-
-        var limit = " limit 25";
-        var total = 0;
-        
-        if (req.query.limit) {
-            limit = " limit " + req.query.limit;
-        }
-
-        if (req.query.skip) {
-            limit = " limit " + req.query.limit + ", " + req.query.skip;
-        }
-
-        connection.query("SELECT count(*) as total FROM message", (err, result) => {
-            if(!err) {
-                console.log("Total Records: - " + result[0].total);
-
-                total = result[0].total;
-            }   
-        });
-
-        connection.query("select * from message order by id asc" + limit, (err,rows) => {
-            connection.release();
-            if(!err) {
-                res.json({ items: rows, total: total });
-            }           
-        });
-
-        connection.on('error', (err) => {      
-              res.json({"code" : 100, "status" : "Error in connection database"});
-              return;     
-        });
-  });
-}
-
-app.get("/api/user", (req , res) => {
-    getUsers(req,res);
-});
-
-app.get("/api/company", (req , res) => {
-    getCompany(req,res);
-});
-
-app.get("/api/product", (req , res) => {
-    getProduct(req,res);
-});
-
-app.get("/api/line", (req , res) => {
-    getLine(req,res);
-});
-
-app.get("/api/demand", (req , res) => {
-    getDemand(req,res);
-});
-
-app.get("/api/messages", (req , res) => {
-    getMessages(req,res);
-});
+app.get('/api/message', createHandler('message'))
