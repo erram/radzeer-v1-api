@@ -253,6 +253,49 @@ function getDemand(req,res) {
   });
 }
 
+function getMessages(req,res) {
+
+    pool.getConnection((err,connection) => {
+        if (err) {
+            res.json({"code" : 100, "status" : "Error in connection database"});
+            return;
+        }   
+
+        console.log('connected as id ' + connection.threadId);
+
+        var limit = " limit 25";
+        var total = 0;
+        
+        if (req.query.limit) {
+            limit = " limit " + req.query.limit;
+        }
+
+        if (req.query.skip) {
+            limit = " limit " + req.query.limit + ", " + req.query.skip;
+        }
+
+        connection.query("SELECT count(*) as total FROM message", (err, result) => {
+            if(!err) {
+                console.log("Total Records: - " + result[0].total);
+
+                total = result[0].total;
+            }   
+        });
+
+        connection.query("select * from message order by id asc" + limit, (err,rows) => {
+            connection.release();
+            if(!err) {
+                res.json({ items: rows, total: total });
+            }           
+        });
+
+        connection.on('error', (err) => {      
+              res.json({"code" : 100, "status" : "Error in connection database"});
+              return;     
+        });
+  });
+}
+
 app.get("/api/user", (req , res) => {
     getUsers(req,res);
 });
@@ -271,4 +314,8 @@ app.get("/api/line", (req , res) => {
 
 app.get("/api/demand", (req , res) => {
     getDemand(req,res);
+});
+
+app.get("/api/messages", (req , res) => {
+    getMessages(req,res);
 });
