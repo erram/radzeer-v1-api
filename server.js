@@ -75,7 +75,7 @@ app.get('/api/user', createHandler('user'))
 
 app.get('/api/company', createHandler('company'))
 
-app.get('/api/product', createHandler('product'))
+app.get('/api/product', createHandler('auction'))
 
 app.get('/api/line', createHandler('line'))
 
