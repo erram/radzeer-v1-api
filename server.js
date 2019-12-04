@@ -82,3 +82,5 @@ app.get('/api/line', createHandler('line'))
 app.get('/api/demand', createHandler('demand'))
 
 app.get('/api/message', createHandler('message'))
+
+app.get('/api/wdl', createHandler('wdl_document'))
